@@ -2,7 +2,7 @@
   "name": "Calcolatore E-Bike",
   "short_name": "E-Bike Calc",
   "description": "Calcolatore consumi, autonomia ed efficienza per e-bike",
-  "start_url": "e-bike/index.html",
+  "start_url": "/e-bike/index.html",
   "scope": "/Scott_ebike/",
   "display": "standalone",
   "background_color": "#f0f4f8",
