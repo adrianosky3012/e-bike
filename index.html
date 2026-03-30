@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1A5276">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="E-Bike Calc">
+<title>Calcolatore E-Bike</title>
+<link rel="manifest" href="manifest.json">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f0f4f8; color: #1a1a2e; }
+header { background: #1A5276; color: white; padding: 20px 16px; text-align: center; }
+header h1 { font-size: 22px; font-weight: 700; }
+header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+.container { padding: 16px; max-width: 480px; margin: 0 auto; }
+.card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #2E86C1; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #e8f4fd; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; font-weight: 500; }
+.field input, .field select {
+  width: 100%; padding: 12px 16px; border: 2px solid #e0e0e0; border-radius: 12px;
+  font-size: 17px; font-weight: 600; color: #1a1a2e; background: #f8fafc;
+  -webkit-appearance: none; appearance: none;
+}
+.field input:focus, .field select:focus { outline: none; border-color: #2E86C1; background: white; }
+.field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232E86C1' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.unit { font-size: 11px; font-weight: 600; color: #2E86C1; background: #e8f4fd; padding: 2px 7px; border-radius: 20px; margin-left: 4px; }
+.rg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rb { background: #f0f8ff; border-radius: 12px; padding: 14px; text-align: center; border: 1px solid #d0eaff; }
+.rb.g { background: #e8f5e9; border-color: #c5e8cb; }
+.rb .v { font-size: 24px; font-weight: 800; color: #1A5276; line-height: 1.1; }
+.rb.g .v { color: #1B6B35; }
+.rb .l { font-size: 11px; color: #777; margin-top: 4px; }
+.ag { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.ab { background: #f3e5f5; border-radius: 12px; padding: 12px 8px; text-align: center; border: 1px solid #e1bee7; }
+.ab .v { font-size: 20px; font-weight: 800; color: #6A1B9A; }
+.ab .l { font-size: 10px; color: #888; margin-top: 3px; }
+.bar-wrap { background: #eee; border-radius: 99px; height: 10px; margin-top: 14px; overflow: hidden; }
+.bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#2E86C1,#1abc9c); transition: width 0.3s; }
+.bar-lbl { display: flex; justify-content: space-between; font-size: 12px; color: #888; margin-top: 4px; }
+.badge { display: inline-block; padding: 8px 18px; border-radius: 50px; font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+.ottima { background:#d4edda; color:#155724; }
+.buona  { background:#fff3cd; color:#856404; }
+.media  { background:#ffe5cc; color:#7a3f00; }
+.alta   { background:#f8d7da; color:#842029; }
+.erow { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #eee; font-size:13px; }
+.erow:last-child { border:none; }
+.erow span:first-child { color:#777; }
+.erow span:last-child { font-weight:700; color:#1A5276; }
+.tinfo { background:#e8f4fd; border-radius:10px; padding:10px 12px; font-size:13px; color:#1A5276; font-weight:600; margin-bottom:14px; }
+.tip { text-align:center; font-size:12px; color:#aaa; margin-bottom:24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🚴 Calcolatore E-Bike</h1>
+  <p>Consumi &bull; Autonomia &bull; Efficienza</p>
+</header>
+<div class="container">
+
+  <div class="card">
+    <div class="card-title">⚡ Batteria</div>
+    <div class="field">
+      <label>Capacità batteria <span class="unit">Wh</span></label>
+      <input type="number" id="capacita" value="625" min="1" inputmode="numeric">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🗺️ Percorso</div>
+    <div class="row2">
+      <div class="field">
+        <label>Carica inizio <span class="unit">%</span></label>
+        <input type="number" id="inizio" value="100" min="0" max="100" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>Carica fine <span class="unit">%</span></label>
+        <input type="number" id="fine" value="68" min="0" max="100" inputmode="numeric">
+      </div>
+    </div>
+    <div class="field">
+      <label>Km percorsi <span class="unit">km</span></label>
+      <input type="number" id="km" value="43" min="0.1" step="0.1" inputmode="decimal">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏔️ Tipo di terreno</div>
+    <div class="field">
+      <label>Seleziona terreno</label>
+      <select id="terreno">
+        <option value="strada">🛣️  Strada — asfalto liscio</option>
+        <option value="sterrato">🪨  Sterrato — ghiaia / terra</option>
+        <option value="fango">💧  Fango — terreno bagnato</option>
+        <option value="neve">❄️  Neve / Sabbia</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Risultati</div>
+    <div class="rg">
+      <div class="rb"><div class="v" id="r-wh">—</div><div class="l">Wh consumati</div></div>
+      <div class="rb g"><div class="v" id="r-whkm">—</div><div class="l">Wh/km reali</div></div>
+      <div class="rb"><div class="v" id="r-whkm10">—</div><div class="l">Wh per 10 km</div></div>
+      <div class="rb g"><div class="v" id="r-perc">—</div><div class="l">Batteria usata</div></div>
+    </div>
+    <div class="bar-wrap"><div class="bar" id="bar" style="width:0%"></div></div>
+    <div class="bar-lbl"><span id="bar-fine">—</span><span id="bar-usato">—</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🛣️ Autonomia stimata</div>
+    <div class="ag">
+      <div class="ab"><div class="v" id="a-tot">—</div><div class="l">km totali</div></div>
+      <div class="ab"><div class="v" id="a-rim">—</div><div class="l">km rimanenti</div></div>
+      <div class="ab"><div class="v" id="a-wh">—</div><div class="l">Wh rimasti</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">⚡ Indice di efficienza</div>
+    <div class="tinfo" id="tinfo">—</div>
+    <div class="badge ottima" id="badge">—</div>
+    <p id="desc" style="font-size:13px;color:#666;margin-bottom:14px;"></p>
+    <div class="erow"><span>Wh/km misurati</span><span id="e-reali">—</span></div>
+    <div class="erow"><span>Equivalente su strada</span><span id="e-equiv">—</span></div>
+    <div class="erow"><span>Coefficiente terreno</span><span id="e-coeff">—</span></div>
+    <div class="erow"><span>Soglia ottima</span><span id="e-soglia">—</span></div>
+  </div>
+
+  <div class="tip">Modifica i valori per ricalcolare automaticamente</div>
+</div>
+
+<script>
+var T = {
+  strada:   {icon:'strada',   nome:'Strada',   coeff:1.00, desc:'Asfalto - riferimento base'},
+  sterrato: {icon:'sterrato', nome:'Sterrato', coeff:1.25, desc:'Ghiaia/terra - resistenza +25%'},
+  fango:    {icon:'fango',    nome:'Fango',    coeff:1.60, desc:'Terreno bagnato - resistenza +60%'},
+  neve:     {icon:'neve',     nome:'Neve',     coeff:1.90, desc:'Neve/sabbia - resistenza +90%'}
+};
+
+function g(id){ return document.getElementById(id); }
+function s(id,v){ var e=g(id); if(e) e.textContent=v; }
+
+function calc(){
+  var cap = parseFloat(g('capacita').value) || 0;
+  var ini = parseFloat(g('inizio').value) || 0;
+  var fin = parseFloat(g('fine').value) || 0;
+  var km  = parseFloat(g('km').value) || 0.001;
+  var tk  = g('terreno').value || 'strada';
+  var t   = T[tk] || T['strada'];
+
+  var pu   = (ini - fin) / 100;
+  var wh   = cap * pu;
+  var whkm = (km > 0) ? (wh / km) : 0;
+  var eq   = (t.coeff > 0) ? (whkm / t.coeff) : whkm;
+  var pr   = fin / 100;
+  var tot  = (pu > 0) ? (km / pu) : 0;
+
+  s('r-wh',     wh.toFixed(0) + ' Wh');
+  s('r-whkm',   whkm.toFixed(2));
+  s('r-whkm10', (whkm * 10).toFixed(1));
+  s('r-perc',   Math.round(pu * 100) + '%');
+  s('a-tot',    Math.round(tot).toString());
+  s('a-rim',    Math.round(tot * pr).toString());
+  s('a-wh',     Math.round(cap * pr).toString());
+
+  var pct = Math.min(100, Math.max(0, pu * 100));
+  g('bar').style.width = pct + '%';
+  s('bar-fine',  Math.round(fin) + '% rimasto');
+  s('bar-usato', Math.round(pct) + '% usato');
+
+  s('tinfo', 'Terreno: ' + t.nome + ' - ' + t.desc);
+
+  var b = g('badge');
+  var d = g('desc');
+  if (eq < 4) {
+    b.className = 'badge ottima';
+    b.textContent = 'Ottima';
+    d.textContent = 'Consumi eccellenti per questo terreno!';
+  } else if (eq < 6) {
+    b.className = 'badge buona';
+    b.textContent = 'Buona';
+    d.textContent = 'Consumi nella norma.';
+  } else if (eq < 9) {
+    b.className = 'badge media';
+    b.textContent = 'Nella media';
+    d.textContent = 'Consumi elevati, considera l'assistenza.';
+  } else {
+    b.className = 'badge alta';
+    b.textContent = 'Alta';
+    d.textContent = 'Consumi molto alti per questo terreno.';
+  }
+
+  s('e-reali',  whkm.toFixed(2) + ' Wh/km');
+  s('e-equiv',  eq.toFixed(2) + ' Wh/km');
+  s('e-coeff',  t.coeff.toFixed(2) + 'x');
+  s('e-soglia', '< ' + (4 * t.coeff).toFixed(1) + ' Wh/km');
+}
+
+window.onload = function() {
+  g('capacita').oninput = calc;
+  g('inizio').oninput   = calc;
+  g('fine').oninput     = calc;
+  g('km').oninput       = calc;
+  g('terreno').onchange = calc;
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+  calc();
+};
+</script>
+</body>
+</html>
